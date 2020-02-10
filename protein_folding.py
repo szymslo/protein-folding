@@ -16,10 +16,98 @@ def wyznaczkierunek(liczba):
 
 
 def zastaplitere(znak):
-    if znak == 'p':
+    if znak == 'p':  # biale
         return 1
-    elif znak == 'h':
+    elif znak == 'h':  # czarne
         return 9
+
+
+def action(tablica, startpoint, rozmiar):
+    # ZACZYNAMY OD ŚRODKA
+    pozycjax = startpoint
+    pozycjay = startpoint
+    tablica[pozycjax][pozycjay] = zastaplitere(bialko[0])
+
+    k = 1
+    while k < rozmiar:
+        kierunek = wyznaczkierunek(ra.randint(1, 4))
+        if kierunek == 'dol':
+            if rozmiar - 1 > pozycjax + 1 > 0 and rozmiar - 1 > pozycjay > 0:
+                if tablica[pozycjax + 1][pozycjay] == 0:
+                    print(f'{k}->w dol')
+                    pozycjax = pozycjax + 1
+                    tablica[pozycjax][pozycjay] = zastaplitere(bialko[k])
+                    k += 1
+                    if tablica[pozycjax][pozycjay] == 9 and tablica[pozycjax - 1][pozycjay] == 9:
+                        print('łączenie...')
+                        # 8 to dwie czarne połączone
+                        tablica[pozycjax][pozycjay] = 8
+                        tablica[pozycjax - 1][pozycjay] = 8
+                    print(tablica)
+                else:
+                    print(f'{k}->kierunek {kierunek} zablokowany')
+                    continue
+            else:
+                print(f'{k}-> {kierunek} wyszło poza zakres')
+                continue
+        elif kierunek == 'gora':
+            if rozmiar - 1 > pozycjax - 1 > 0 and rozmiar - 1 > pozycjay > 0:
+                if tablica[pozycjax - 1][pozycjay] == 0:
+                    print(f'{k}->do gory')
+                    pozycjax = pozycjax - 1
+                    tablica[pozycjax][pozycjay] = zastaplitere(bialko[k])
+                    k += 1
+                    if tablica[pozycjax][pozycjay] == 9 and tablica[pozycjax + 1][pozycjay] == 9:
+                        print('łączenie...')
+                        # 8 to dwie czarne połączone
+                        tablica[pozycjax][pozycjay] = 8
+                        tablica[pozycjax + 1][pozycjay] = 8
+                    print(tablica)
+                else:
+                    print(f'{k}->kierunek {kierunek} zablokowany')
+                    continue
+            else:
+                print(f'{k}-> {kierunek} wyszło poza zakres')
+                continue
+        elif kierunek == 'prawo':
+            if rozmiar - 1 > pozycjax > 0 and rozmiar - 1 > pozycjay + 1 > 0:
+                if tablica[pozycjax][pozycjay + 1] == 0:
+                    print(f'{k}->w prawo')
+                    pozycjay = pozycjay + 1
+                    tablica[pozycjax][pozycjay] = zastaplitere(bialko[k])
+                    k += 1
+                    if tablica[pozycjax][pozycjay] == 9 and tablica[pozycjax][pozycjay - 1] == 9:
+                        print('łączenie...')
+                        # 8 to dwie czarne połączone
+                        tablica[pozycjax][pozycjay] = 8
+                        tablica[pozycjax][pozycjay - 1] = 8
+                    print(tablica)
+                else:
+                    print(f'{k}->kierunek {kierunek} zablokowany')
+                    continue
+            else:
+                print(f'{k}->{kierunek} wyszło poza zakres')
+                continue
+        elif kierunek == 'lewo':
+            if rozmiar - 1 > pozycjax > 0 and rozmiar - 1 > pozycjay - 1 > 0:
+                if tablica[pozycjax][pozycjay - 1] == 0:
+                    print('łączenie...')
+                    print(f'{k}->w lewo')
+                    pozycjay = pozycjay - 1
+                    tablica[pozycjax][pozycjay] = zastaplitere(bialko[k])
+                    k += 1
+                    if tablica[pozycjax][pozycjay] == 9 or 8 and tablica[pozycjax][pozycjay + 1] == 9:
+                        # 8 to dwie czarne połączone
+                        tablica[pozycjax][pozycjay] = 8
+                        tablica[pozycjax][pozycjay + 1] = 8
+                    print(tablica)
+                else:
+                    print(f'{k}->kierunek {kierunek} zablokowany')
+                    continue
+            else:
+                print(f'{k}->{kierunek} wyszło poza zakres')
+                continue
+    print(tablica)
 
 
 regex = re.compile("^[ph]+$")
@@ -31,57 +119,8 @@ while not regex.match(bialko):
     print("Podano niepoprawne dane, podaj poprawny ciąg białka: ")
     bialko = input()
 
-rozmiar = len(bialko)
-tablica = np.zeros((rozmiar, rozmiar), dtype=int)
+dlugosc = len(bialko)
+temp = np.zeros((dlugosc, dlugosc), dtype=int)
+srodek = int(dlugosc / 2)
 
-srodek = int(rozmiar / 2)
-
-# ZACZYNAMY OD ŚRODKA
-pozycjax = srodek
-pozycjay = srodek
-tablica[pozycjax][pozycjay] = zastaplitere(bialko[0])
-
-
-k = 1
-while k < rozmiar:
-    kierunek = wyznaczkierunek(ra.randint(1, 4))
-    if kierunek == 'dol':
-        if tablica[pozycjax+1][pozycjay] == 0 and pozycjax < rozmiar and pozycjay < rozmiar:
-            print(f'{k}->w dol')
-            pozycjax = pozycjax + 1
-            tablica[pozycjax][pozycjay] = zastaplitere(bialko[k])
-            k += 1
-        else:
-            print(f'{k}->kierunek {kierunek} zablokowany')
-            continue
-    elif kierunek == 'gora':
-        if tablica[pozycjax-1][pozycjay] == 0 and pozycjax < rozmiar and pozycjay < rozmiar:
-            print(f'{k}->do gory')
-            pozycjax = pozycjax - 1
-            tablica[pozycjax][pozycjay] = zastaplitere(bialko[k])
-            k += 1
-        else:
-            print(f'{k}->kierunek {kierunek} zablokowany')
-            continue
-    elif kierunek == 'prawo':
-        if tablica[pozycjax][pozycjay+1] == 0 and pozycjax < rozmiar and pozycjay < rozmiar:
-            print(f'{k}->w prawo')
-            pozycjay = pozycjay + 1
-            tablica[pozycjax][pozycjay] = zastaplitere(bialko[k])
-            k += 1
-        else:
-            print(f'{k}->kierunek {kierunek} zablokowany')
-            continue
-    elif kierunek == 'lewo':
-        if tablica[pozycjax][pozycjay-1] == 0 and pozycjax < rozmiar and pozycjay < rozmiar:
-            print(f'{k}->w lewo')
-            pozycjay = pozycjay - 1
-            tablica[pozycjax][pozycjay] = zastaplitere(bialko[k])
-            k += 1
-        else:
-            print(f'{k}->kierunek {kierunek} zablokowany')
-            continue
-
-print(tablica)
-
-
+action(temp, srodek, dlugosc)
