@@ -3,7 +3,6 @@ import random as ra
 import numpy as np
 import matplotlib.pyplot as plt
 
-
 biale_wykresX = []
 biale_wykresY = []
 czarne_wykresX = []
@@ -23,13 +22,6 @@ def wyznaczkierunek(liczba):
         return "dol"
 
 
-'''
-def liczpunkty(tab):
-    for i in range(len(tab)):
-        for j in range(len(tab)):
-'''
-
-
 def zastaplitere(znak):
     if znak == 'p':  # biale
         return 1
@@ -44,14 +36,25 @@ def sprawdzlitere(znak):
         return False
 
 
+def wynik(tab):
+    punkty = 0
+    for i in range(len(tab)):
+        for j in range(len(tab)):
+            if i >= 1 and j >= 1:
+                if tab[i][j] == 9 and tab[i-1][j] == 8:
+                    punkty += 1
+                if tab[i][j] == 9 and tab[i+1][j] == 8:
+                    punkty += 1
+                if tab[i][j] == 9 and tab[i][j-1] == 8:
+                    punkty += 1
+                if tab[i][j] == 9 and tab[i][j+1] == 8:
+                    punkty += 1
+    return int(punkty*(-1))
+
+
 def action(rozmiar):
     tablica = np.zeros((rozmiar, rozmiar), dtype=int)
     startpoint = int(rozmiar / 2)
-
-    licznik_dol = 0
-    licznik_gora = 0
-    licznik_prawo = 0
-    licznik_lewo = 0
 
     ostatnie_kierunki = ['brak', 'brak']
 
@@ -74,7 +77,7 @@ def action(rozmiar):
     while k < rozmiar:
         kierunek = wyznaczkierunek(ra.randint(1, 4))
         if kierunek == 'dol':
-            if ostatnie_kierunki[-1] == 'dol' and ostatnie_kierunki[-2] == 'dol':
+            if ostatnie_kierunki[-1] == 'dol':  # and ostatnie_kierunki[-2] == 'dol':
                 print("wymuszenie zmiany kierunku")
                 continue
             else:
@@ -107,7 +110,7 @@ def action(rozmiar):
                     print(f'{k}-> {kierunek} wyszło poza zakres')
                     continue
         elif kierunek == 'gora':
-            if ostatnie_kierunki[-1] == 'gora' and ostatnie_kierunki[-2] == 'gora':
+            if ostatnie_kierunki[-1] == 'gora':  # and ostatnie_kierunki[-2] == 'gora':
                 print("wymuszenie zmiany kierunku")
                 continue
             else:
@@ -140,7 +143,7 @@ def action(rozmiar):
                     print(f'{k}-> {kierunek} wyszło poza zakres')
                     continue
         elif kierunek == 'prawo':
-            if ostatnie_kierunki[-1] == 'prawo' and ostatnie_kierunki[-2] == 'prawo':
+            if ostatnie_kierunki[-1] == 'prawo':  # and ostatnie_kierunki[-2] == 'prawo':
                 print("wymuszenie zmiany kierunku")
                 continue
             else:
@@ -173,7 +176,7 @@ def action(rozmiar):
                     print(f'{k}->{kierunek} wyszło poza zakres')
                     continue
         elif kierunek == 'lewo':
-            if ostatnie_kierunki[-1] == 'lewo' and ostatnie_kierunki[-2] == 'lewo':
+            if ostatnie_kierunki[-1] == 'lewo':  # and ostatnie_kierunki[-2] == 'lewo':
                 print("wymuszenie zmiany kierunku")
                 continue
             else:
@@ -205,7 +208,10 @@ def action(rozmiar):
                 else:
                     print(f'{k}->{kierunek} wyszło poza zakres')
                     continue
+    print('------------------------------------------')
     print(tablica)
+    print('------------------------------------------')
+    print(f'PUNKTY: {wynik(tablica)}')
     print('------------------------------------------')
     print('kierunki')
     print(ostatnie_kierunki)
